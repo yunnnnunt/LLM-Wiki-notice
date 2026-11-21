@@ -1,0 +1,1539 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>社會心理學在實際生活上的運用問題：全域圖譜導航 16 節點學術簡報</title>
+  
+  <!-- KaTeX for pristine LaTeX mathematics -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+
+  <!-- Google Academic Fonts: Playfair Display, Noto Serif TC, Inter, JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700;900&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --navy-deep: #0f2b5c;       /* 核心深海藍 */
+      --navy-royal: #1e3a8a;      /* 皇家海軍藍 */
+      --blue-accent: #2563eb;     /* 亮湛藍 (高亮節點/邊) */
+      --blue-light: #eff6ff;      /* 淺藍背景 */
+      --blue-subtle: #dbeafe;     /* 細緻藍邊框 */
+      --gold-accent: #b45309;     /* 典雅琥珀金 */
+      --gold-subtle: #fef3c7;     /* 淺金背景 */
+      
+      --bg-canvas: #f1f5f9;       /* 展台底色 */
+      --slide-bg: #ffffff;        /* 投影片純淨白 */
+      --text-main: #0f172a;       /* 主要文字深墨色 */
+      --text-muted: #334155;      /* 次要文字深石板灰 */
+      --text-dim: #64748b;        /* 輔助標記 */
+      --border-card: #e2e8f0;     /* 典雅卡片邊框 */
+      --shadow-elegant: 0 20px 40px -15px rgba(15, 43, 92, 0.12), 0 0 1px 1px rgba(15, 43, 92, 0.05);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang TC", "Microsoft JhengHei", sans-serif;
+      background-color: var(--bg-canvas);
+      color: var(--text-main);
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Progress Bar */
+    .top-progress-wrap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: #e2e8f0;
+      z-index: 100;
+    }
+    .top-progress-bar {
+      height: 100%;
+      width: 6.25%;
+      background: linear-gradient(90deg, var(--navy-deep), var(--blue-accent));
+      transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Academic Header */
+    .deck-header {
+      padding: 10px 44px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #ffffff;
+      border-bottom: 1px solid var(--border-card);
+      box-shadow: 0 2px 4px rgba(15, 43, 92, 0.03);
+      z-index: 50;
+    }
+    .academic-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-crest {
+      width: 26px;
+      height: 26px;
+      background: var(--navy-deep);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+    .brand-title {
+      font-family: 'Noto Serif TC', serif;
+      font-weight: 700;
+      font-size: 0.92rem;
+      letter-spacing: 0.04em;
+      color: var(--navy-deep);
+    }
+    .brand-subtitle {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      border-left: 1px solid #cbd5e1;
+      padding-left: 10px;
+      margin-left: 2px;
+    }
+
+    /* Main Viewport */
+    .viewport {
+      flex: 1;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 36px;
+    }
+
+    /* Slide Card */
+    .slide {
+      position: absolute;
+      width: min(1340px, 96vw);
+      height: min(750px, 87vh);
+      background: var(--slide-bg);
+      border: 1px solid var(--border-card);
+      border-radius: 16px;
+      padding: 24px 32px 32px 32px;
+      box-shadow: var(--shadow-elegant);
+      opacity: 0;
+      visibility: hidden;
+      transform: scale(0.98) translateY(12px);
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .slide.active {
+      opacity: 1;
+      visibility: visible;
+      transform: scale(1) translateY(0);
+    }
+
+    /* Slide Top Bar */
+    .slide-top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #edf2f7;
+      padding-bottom: 8px;
+      margin-bottom: 10px;
+    }
+    .layer-badge {
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .layer-meta { background: var(--blue-light); color: var(--navy-deep); border: 1px solid var(--blue-subtle); }
+    .layer-theory { background: #eff6ff; color: var(--navy-royal); border: 1px solid #bfdbfe; }
+    .layer-critique { background: #fffbeb; color: var(--gold-accent); border: 1px solid #fde68a; }
+    .layer-crisis { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+    .layer-solution { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
+
+    .node-chain-indicator {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.76rem;
+      color: var(--text-dim);
+    }
+    .node-chain-indicator strong {
+      color: var(--blue-accent);
+    }
+
+    /* Slide Heading */
+    .slide-heading-wrap {
+      margin-bottom: 12px;
+    }
+    .slide-heading {
+      font-family: "Noto Serif TC", "Playfair Display", Georgia, serif;
+      font-size: 1.65rem;
+      font-weight: 700;
+      color: var(--navy-deep);
+      line-height: 1.25;
+      letter-spacing: -0.01em;
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+    }
+    .slide-heading-en {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.95rem;
+      color: var(--text-dim);
+      font-weight: 400;
+      font-style: italic;
+    }
+
+    /* Two Column Layout: Left 16-Node Graph Radar + Right Content Area */
+    .slide-body-split {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 310px 1fr;
+      gap: 22px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    /* Left: Global Graph Minimap Card */
+    .graph-radar-card {
+      background: #f8fafc;
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .radar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: var(--navy-deep);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 5px;
+    }
+    .radar-svg-wrap {
+      flex: 1;
+      width: 100%;
+      min-height: 310px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .radar-svg-wrap svg {
+      width: 100%;
+      height: 100%;
+      max-height: 360px;
+    }
+    .radar-meta {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 8px 10px;
+      font-size: 0.72rem;
+      line-height: 1.4;
+      color: var(--text-muted);
+    }
+
+    /* Right: Main Content Area */
+    .main-content-flow {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    /* Cards */
+    .card {
+      background: #ffffff;
+      border: 1px solid var(--border-card);
+      border-radius: 8px;
+      padding: 12px 16px;
+      box-shadow: 0 2px 4px rgba(15, 43, 92, 0.02);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .card.blue-accent {
+      background: var(--blue-light);
+      border-color: var(--blue-subtle);
+    }
+    .card.navy-border {
+      border-left: 4px solid var(--navy-deep);
+      background: #fdfdfd;
+    }
+    .card.danger-border {
+      border-left: 4px solid #ef4444;
+      background: #fffafa;
+    }
+    .card-title {
+      font-family: "Noto Serif TC", serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--navy-deep);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .card-p {
+      font-size: 0.85rem;
+      line-height: 1.58;
+      color: var(--text-muted);
+    }
+    .card-p strong {
+      color: var(--text-main);
+    }
+
+    /* Dedicated Local SVG Container */
+    .local-svg-card {
+      background: #f8fafc;
+      border: 1px solid var(--border-card);
+      border-radius: 8px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 190px;
+    }
+    .local-svg-card svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Fixed Bottom-Right Slide Number */
+    .slide-page-badge {
+      position: absolute;
+      bottom: 18px;
+      right: 28px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--navy-deep);
+      letter-spacing: 0.05em;
+      background: var(--blue-light);
+      border: 1px solid var(--blue-subtle);
+      padding: 4px 12px;
+      border-radius: 12px;
+      box-shadow: 0 2px 4px rgba(15, 43, 92, 0.04);
+    }
+
+    /* Bottom Control Bar */
+    .deck-footer {
+      padding: 10px 44px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #ffffff;
+      border-top: 1px solid var(--border-card);
+      box-shadow: 0 -2px 4px rgba(15, 43, 92, 0.02);
+      z-index: 50;
+    }
+    .nav-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .nav-btn {
+      background: #ffffff;
+      border: 1px solid var(--border-card);
+      color: var(--navy-deep);
+      padding: 6px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.84rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .nav-btn:hover {
+      background: var(--navy-deep);
+      color: #ffffff;
+      border-color: var(--navy-deep);
+    }
+    .nav-btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+      background: #ffffff;
+      color: var(--text-dim);
+      border-color: var(--border-card);
+    }
+
+    /* Title Slide Layout */
+    .slide-title-view {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 20px;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+      border: 2px solid var(--blue-subtle);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Progress Bar -->
+  <div class="top-progress-wrap">
+    <div class="top-progress-bar" id="progressBar"></div>
+  </div>
+
+  <!-- Header -->
+  <header class="deck-header">
+    <div class="academic-brand">
+      <div class="brand-crest">Ψ</div>
+      <div class="brand-title">社會心理學 LLM Wiki 知識庫 · 16 節點全域圖譜簡報</div>
+      <div class="brand-subtitle">深度學術批判與現實生活工程干預</div>
+    </div>
+    <div style="font-size: 0.78rem; color: var(--text-dim);">
+      鍵盤：<kbd style="background:#f1f5f9; border:1px solid #cbd5e1; padding:2px 5px; border-radius:3px;">←</kbd> <kbd style="background:#f1f5f9; border:1px solid #cbd5e1; padding:2px 5px; border-radius:3px;">→</kbd> <kbd style="background:#f1f5f9; border:1px solid #cbd5e1; padding:2px 5px; border-radius:3px;">Space</kbd> ｜ 全螢幕：<kbd style="background:#f1f5f9; border:1px solid #cbd5e1; padding:2px 5px; border-radius:3px;">F</kbd>
+    </div>
+  </header>
+
+  <!-- Viewport -->
+  <main class="viewport">
+
+    <!-- ==================== SLIDE 01: META START ==================== -->
+    <section class="slide slide-title-view active" data-slide="1">
+      <div style="border-bottom: 2px solid var(--gold-accent); padding-bottom: 4px; font-size: 0.82rem; font-weight:700; color: var(--gold-accent); letter-spacing: 0.12em; text-transform:uppercase;">
+        Knowledge Graph Synthesis · 16-Node Causal Architecture
+      </div>
+      <h1 style="font-family:'Noto Serif TC', serif; font-size: 2.35rem; font-weight: 900; color: var(--navy-deep); max-width: 950px; line-height: 1.3;">
+        社會心理學在實際生活上的運用問題
+      </h1>
+      <p style="font-size: 1.15rem; color: var(--blue-accent); font-weight: 500; max-width: 820px; line-height: 1.6;">
+        從實驗室強情境到真實世界：理論盲區、生態效度鴻溝與制度化工程干預
+      </p>
+
+      <div style="background:#ffffff; border:1px solid var(--border-card); border-radius:8px; padding:10px 24px; font-size:0.83rem; color:var(--text-muted); display:flex; gap:16px; box-shadow:0 4px 6px -1px rgba(15,43,92,0.03);">
+        <span>📖 <strong>已編譯 5 篇核心實證論文</strong>：</span>
+        <span>Milgram (1963)</span> • <span>Franzen (2023)</span> • <span>Darley (1968)</span> • <span>Festinger (1959)</span> • <span>Baumeister (1995)</span>
+      </div>
+
+      <div style="max-width: 780px; font-size: 0.84rem; color: var(--text-dim); line-height: 1.6;">
+        本簡報貫徹「全域圖譜導航模式（Global Graph Navigation）」：左側微型雷達即時標註當前節點座標與因果邊，帶領讀者穿透「理論 ➔ 演化機制 ➔ 方法批判 ➔ 現實生活危機 ➔ 系統工程防線」的完整閉環。
+      </div>
+
+      <div class="slide-page-badge">01 / 16</div>
+    </section>
+
+    <!-- ==================== SLIDE 02: THEORY LEWIN ==================== -->
+    <section class="slide" data-slide="2">
+      <div class="slide-top-bar">
+        <span class="layer-badge layer-theory">理論基石 · Layer 1</span>
+        <span class="node-chain-indicator">Node 01 ➔ <strong>Node 02 [THEORY_LEWIN]</strong> ➔ Nodes 03, 04, 05, 06</span>
+      </div>
+      <div class="slide-heading-wrap">
+        <h2 class="slide-heading">
+          情境力量 vs. 常識特質論的認知陷阱
+          <span class="slide-heading-en">The Power of the Situation & Kurt Lewin's Field Theory</span>
+        </h2>
+      </div>
+
+      <div class="slide-body-split">
+        <div class="graph-radar-card">
+          <div class="radar-header">
+            <span>全域圖譜雷達</span>
+            <span style="color:var(--blue-accent); font-family:monospace;">NODE 02</span>
+          </div>
+          <div class="radar-svg-wrap" id="radar-02"></div>
+          <div class="radar-meta">
+            <strong>拓撲入鏈</strong>：N01 總綱起點<br>
+            <strong>拓撲出鏈</strong>：導向 N03(歸屬)、N04(服從)、N05(從眾)、N06(旁觀)
+          </div>
+        </div>
+
+        <div class="main-content-flow">
+          <div class="grid-2">
+            <div class="card danger-border">
+              <div class="card-title">⚠️ 常識歸因盲區：基本歸因謬誤 (FAE)</div>
+              <p class="card-p">
+                世人習慣將重大醜聞歸咎於<strong>個人的道德敗壞</strong>（納粹是怪物、目擊者是冷漠、舞弊是害群之馬）。這種直覺阻礙了對系統架構漏洞的深層反思。
+              </p>
+            </div>
+            <div class="card blue-accent">
+              <div class="card-title">📐 Kurt Lewin 場論公式：B = f(P, E)</div>
+              <p class="card-p">
+                行為 $B$ 是由個體特質 $P$ 與環境情境 $E$ 共同決定。實證揭示：<strong>在高度威權或群體一致的「強情境（Strong Situation）」中，情境力場 $E$ 會壓倒性抑制人格差異 $P$！</strong>
+              </p>
+            </div>
+          </div>
+
+          <div class="local-svg-card">
+            <svg viewBox="0 0 550 160" xmlns="http://www.w3.org/2000/svg">
+              <rect width="550" height="160" fill="#ffffff" rx="6" stroke="#e2e8f0"/>
+              <text x="275" y="24" font-family="'Noto Serif TC', serif" font-size="11" font-weight="700" fill="#0f2b5c" text-anchor="middle">強情境下的行為重力場向量圖 (Force Field Vector)</text>
+              <rect x="50" y="45" width="120" height="70" fill="#f8fafc" stroke="#94a3b8" rx="4"/>
+              <text x="110" y="72" font-size="11" font-weight="700" fill="#334155" text-anchor="middle">個人品格特質 (P)</text>
+              <text x="110" y="92" font-size="9" fill="#64748b" text-anchor="middle">良知、同理心、自尊</text>
+              <polygon points="210,65 310,65 310,50 340,80 310,110 310,95 210,95" fill="#2563eb"/>
+              <text x="265" y="84" font-size="10" font-weight="700" fill="#ffffff" text-anchor="middle">情境引力 (E)</text>
+              <rect x="375" y="45" width="130" height="70" fill="#eff6ff" stroke="#2563eb" rx="4"/>
+              <text x="440" y="72" font-size="11" font-weight="700" fill="#0f2b5c" text-anchor="middle">外顯行為 (B)</text>
+              <text x="440" y="92" font-size="9" font-weight="700" fill="#dc2626" text-anchor="middle">被迫順從 / 執行惡意</text>
+              <text x="275" y="142" font-size="9" fill="#64748b" text-anchor="middle">結論：企圖僅憑「品格宣導、招募好人」防範組織危機，在科學上被證實無效</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div class="slide-page-badge">02 / 16</div>
+    </section>
+
+    <!-- ==================== SLIDE 03: THEORY BELONGING ==================== -->
+    <section class="slide" data-slide="3">
+      <div class="slide-top-bar">
+        <span class="layer-badge layer-theory">演化動能 · Layer 1</span>
+        <span class="node-chain-indicator">Node 02 ➔ <strong>Node 03 [THEORY_BELONGING]</strong> ➔ Nodes 04, 05, 06</span>
+      </div>
+      <div class="slide-heading-wrap">
+        <h2 class="slide-heading">
+          Baumeister & Leary (1995) 歸屬需求與排斥恐懼
+          <span class="slide-heading-en">The Need to Belong: The Deep Evolutionary Driver of Social Conformity</span>
+        </h2>
+      </div>
+
+      <div class="slide-body-split">
+        <div class="graph-radar-card">
+          <div class="radar-header">
+            <span>全域圖譜雷達</span>
+            <span style="color:var(--blue-accent); font-family:monospace;">NODE 03</span>
+          </div>
+          <div class="radar-svg-wrap" id="radar-03"></div>
+          <div class="radar-meta">
+            <strong>拓撲入鏈</strong>：N02 場論基礎<br>
+            <strong>拓撲出鏈</strong>：為 N04(服從)、N05(從眾)、N06(旁觀) 提供演化動能解碼
+          </div>
+        </div>
+
+        <div class="main-content-flow">
+          <div class="grid-2">
+            <div class="card navy-border">
+              <div class="card-title">🧬 演化生物學的核心驅力</div>
+              <p class="card-p">
+                人類是高度依賴部落生存的物種。演化將<strong>「被群體排斥（Ostracism）」</strong>編碼為最致命的威脅。現代神經科學證實：排斥所活化的大腦背側前扣帶皮層（dACC），與肉體物理痛覺完全共用同一回路！
+              </p>
+            </div>
+            <div class="card blue-accent">
+              <div class="card-title">📉 歸屬剝奪的生理致命代價</div>
+              <p class="card-p">
+                • <strong>全因死亡率攀升 (Lynch, 1979)</strong>：孤立者死亡率顯著高於有社會連結者。<br>
+                • <strong>免疫抑制 (Kiecolt-Glaser)</strong>：孤獨者自然殺手細胞（NK Cell）活性顯著低落。
+              </p>
+            </div>
+          </div>
+
+          <div class="local-svg-card">
+            <svg viewBox="0 0 550 160" xmlns="http://www.w3.org/2000/svg">
+              <rect width="550" height="160" fill="#ffffff" rx="6" stroke="#e2e8f0"/>
+              <text x="275" y="24" font-family="'Noto Serif TC', serif" font-size="10.5" font-weight="700" fill="#0f2b5c" text-anchor="middle">滿足歸屬需求的雙重必要條件 (Baumeister & Leary, 1995)</text>
+              <rect x="50" y="45" width="200" height="85" fill="#eff6ff" stroke="#bfdbfe" rx="6"/>
+              <text x="150" y="70" font-size="10.5" font-weight="700" fill="#1e40af" text-anchor="middle">維度一：頻繁的正向互動</text>
+              <text x="150" y="90" font-size="8.5" fill="#334155" text-anchor="middle">Frequent Positive Interactions</text>
+              <text x="150" y="112" font-size="8" fill="#64748b" text-anchor="middle">非敵對、令人愉悅的接觸</text>
+
+              <text x="275" y="90" font-size="18" font-weight="700" fill="#2563eb" text-anchor="middle">+</text>
+
+              <rect x="300" y="45" width="200" height="85" fill="#eff6ff" stroke="#bfdbfe" rx="6"/>
+              <text x="400" y="70" font-size="10.5" font-weight="700" fill="#1e40af" text-anchor="middle">維度二：持久互惠關懷架構</text>
+              <text x="400" y="90" font-size="8.5" fill="#334155" text-anchor="middle">Stable Framework of Caring</text>
+              <text x="400" y="112" font-size="8" fill="#64748b" text-anchor="middle">彼此在乎福祉且延續至未來</text>
+              <text x="275" y="146" font-size="8.5" fill="#dc2626" text-anchor="middle">缺少任一維度皆構成歸屬剝奪，驅使個體為融入群體放棄自主道德判斷！</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div class="slide-page-badge">03 / 16</div>
+    </section>
+
+    <!-- ==================== SLIDE 04: THEORY OBEDIENCE ==================== -->
+    <section class="slide" data-slide="4">
+      <div class="slide-top-bar">
+        <span class="layer-badge layer-theory">垂直權威實證 · Layer 1</span>
+        <span class="node-chain-indicator">Nodes 02, 03 ➔ <strong>Node 04 [THEORY_OBEDIENCE]</strong> ➔ Nodes 07, 08, 10</span>
+      </div>
+      <div class="slide-heading-wrap">
+        <h2 class="slide-heading">
+          Milgram (1963) 權威服從的微觀機制與數據
+          <span class="slide-heading-en">Destructive Obedience: 65% Compliance and the Agentic Shift</span>
+        </h2>
+      </div>
+
+      <div class="slide-body-split">
+        <div class="graph-radar-card">
+          <div class="radar-header">
+            <span>全域圖譜雷達</span>
+            <span style="color:var(--blue-accent); font-family:monospace;">NODE 04</span>
+          </div>
+          <div class="radar-svg-wrap" id="radar-04"></div>
+          <div class="radar-meta">
+            <strong>拓撲入鏈</strong>：N02(場論), N03(歸屬)<br>
+            <strong>拓撲出鏈</strong>：導向 N07(失調合理化)、N08(生態批判)、N10(醫療空難危機)
+          </div>
+        </div>
+
+        <div class="main-content-flow">
+          <div class="grid-2">
+            <div class="card navy-border">
+              <div class="card-title">⚡ 震撼數據：預測 vs 實際行為</div>
+              <p class="card-p">
+                • <strong>專家預測</strong>：耶魯心理系學生預估僅 $\mu = 1.2\%$ 會執行到最高檔位。<br>
+                • <strong>實際實證</strong>：<strong>100% 突破 300V</strong>；高達 <strong>65.0%（26/40）完全服從施加 450V 致命電擊</strong>（等差檔位 $V_k = 15k$）。
+              </p>
+            </div>
+            <div class="card blue-accent">
+              <div class="card-title">🧠 代理狀態機制 (Agentic State)</div>
+              <p class="card-p">
+                被試非心理變態（35% 出現無法克制的神經質狂笑、3 人全身抽搐）。個體心態由「自主狀態」轉為<strong>「代理工具模式」</strong>：道德責任向上轉移給白袍權威，自身僅對執行效率負責。
+              </p>
+            </div>
+          </div>
+
+          <div class="local-svg-card">
+            <svg viewBox="0 0 550 160" xmlns="http://www.w3.org/2000/svg">
+              <rect width="550" height="160" fill="#ffffff" rx="6" stroke="#e2e8f0"/>
+              <rect x="25" y="15" width="280" height="130" fill="#0f2b5c" rx="6"/>
+              <text x="165" y="36" font-family="'Playfair Display', serif" font-size="10" font-weight="700" fill="#ffffff" text-anchor="middle">MILGRAM SHOCK GENERATOR (15V - 450V)</text>
+              <rect x="40" y="52" width="60" height="36" fill="#1e3a8a" rx="3"/>
+              <text x="70" y="74" font-size="8" fill="#93c5fd" text-anchor="middle">15V-120V</text>
+              <rect x="110" y="52" width="85" height="36" fill="#1e3a8a" rx="3"/>
+              <text x="152" y="74" font-size="8" fill="#93c5fd" text-anchor="middle">135V-300V (Wall)</text>
+              <rect x="205" y="52" width="85" height="36" fill="#7f1d1d" rx="3"/>
+              <text x="247" y="68" font-size="8" font-weight="700" fill="#fca5a5" text-anchor="middle">315V-450V</text>
+              <text x="247" y="82" font-size="7" fill="#fca5a5" text-anchor="middle">XXX Danger</text>
+              <text x="165" y="115" font-size="9" font-weight="700" fill="#38bdf8" text-anchor="middle">100% 突破 300V ➔ 65% 完全服從</text>
+
+              <rect x="325" y="15" width="200" height="130" fill="#f8fafc" stroke="#cbd5e1" rx="6"/>
+              <text x="425" y="34" font-family="'Noto Serif TC', serif" font-size="10" font-weight="700" fill="#0f2b5c" text-anchor="middle">4 級標準化遞進催促語 (Prods)</text>
+              <text x="340" y="58" font-size="8.5" fill="#334155">1. Please continue.</text>
+              <text x="340" y="78" font-size="8.5" fill="#334155">2. The experiment requires it.</text>
+              <text x="340" y="98" font-size="8.5" fill="#92400e" font-weight="700">3. It is absolutely essential.</text>
+              <text x="340" y="118" font-size="8.5" fill="#991b1b" font-weight="700">4. You have no other choice!</text>
+              <text x="425" y="136" font-size="8" fill="#64748b" text-anchor="middle">階梯催促鎖死自主道德退出空間</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div class="slide-page-badge">04 / 16</div>
+    </section>
+
+    <!-- ==================== SLIDE 05: THEORY CONFORMITY ==================== -->
+    <section class="slide" data-slide="5">
+      <div class="slide-top-bar">
+        <span class="layer-badge layer-theory">水平同儕實證 · Layer 1</span>
+        <span class="node-chain-indicator">Nodes 02, 03 ➔ <strong>Node 05 [THEORY_CONFORMITY]</strong> ➔ Nodes 07, 08, 12</span>
+      </div>
+      <div class="slide-heading-wrap">
+        <h2 class="slide-heading">
+          Asch (1955) & Franzen (2023) 從眾與激勵抗性
+          <span class="slide-heading-en">Conformity Under Group Pressure: Persistence Despite Monetary Stakes</span>
+        </h2>
+      </div>
+
+      <div class="slide-body-split">
+        <div class="graph-radar-card">
+          <div class="radar-header">
+            <span>全域圖譜雷達</span>
+            <span style="color:var(--blue-accent); font-family:monospace;">NODE 05</span>
+          </div>
+          <div class="radar-svg-wrap" id="radar-05"></div>
+          <div class="radar-meta">
+            <strong>拓撲入鏈</strong>：N02(場論), N03(歸屬)<br>
+            <strong>拓撲出鏈</strong>：導向 N07(失調合理化)、N08(生態批判)、N12(同溫層盲思)
+          </div>
+        </div>
+
+        <div class="main-content-flow">
+          <div class="grid-2">
+            <div class="card navy-border">
+              <div class="card-title">👥 跨越 70 年的高精度重現</div>
+              <p class="card-p">
+                • <strong>Asch (1955) 原作</strong>：關鍵試次錯誤率高達 <strong>36.8%</strong>。<br>
+                • <strong>Franzen (2023) 當代重現 ($N=202$)</strong>：無激勵組錯誤率達 <strong>33.0%</strong>（雙尾檢定 $t(16)=0.59, p=0.57$，毫無衰減！）。
+              </p>
+            </div>
+            <div class="card blue-accent">
+              <div class="card-title">💰 物質激勵能否抵消從眾？(Incentives)</div>
+              <p class="card-p">
+                每答對一題給予 1 CHF 金錢獎勵，錯誤率從 33% 降至 <strong>25%</strong>（下降 8 個百分點, $p=0.03$）。<br>
+                <strong>批判洞察</strong>：經濟激勵能提升理性，但<strong>即便有金錢代價，仍有四分之一的決策屈從多數</strong>！
+              </p>
+            </div>
+          </div>
+
+          <div class="local-svg-card">
+            <svg viewBox="0 0 550 160" xmlns="http://www.w3.org/2000/svg">
+              <rect width="550" height="160" fill="#ffffff" rx="6" stroke="#e2e8f0"/>
+              <rect x="25" y="15" width="240" height="130" fill="#f8fafc" stroke="#cbd5e1" rx="4"/>
+              <text x="145" y="34" font-family="'Noto Serif TC', serif" font-size="10" font-weight="700" fill="#0f2b5c" text-anchor="middle">線段視覺判斷任務 (Asch Task)</text>
+              <line x1="60" y1="50" x2="60" y2="115" stroke="#0f2b5c" stroke-width="4"/>
+              <text x="60" y="132" font-size="8.5" font-weight="700" fill="#0f2b5c" text-anchor="middle">標準線 X</text>
+              <line x1="130" y1="70" x2="130" y2="115" stroke="#94a3b8" stroke-width="3"/>
+              <text x="130" y="132" font-size="8" fill="#64748b" text-anchor="middle">1 (短)</text>
+              <line x1="175" y1="50" x2="175" y2="115" stroke="#2563eb" stroke-width="4"/>
+              <text x="175" y="132" font-size="8" font-weight="700" fill="#2563eb" text-anchor="middle">2 (正解)</text>
+              <line x1="220" y1="40" x2="220" y2="115" stroke="#94a3b8" stroke-width="3"/>
+              <text x="220" y="132" font-size="8" fill="#64748b" text-anchor="middle">3 (長)</text>
+
+              <rect x="285" y="15" width="240" height="130" fill="#f8fafc" stroke="#cbd5e1" rx="4"/>
+              <text x="405" y="34" font-family="'Noto Serif TC', serif" font-size="10" font-weight="700" fill="#0f2b5c" text-anchor="middle">Franzen (2023) 激勵介入對比 ($N=202$)</text>
+              <rect x="320" y="55" width="45" height="65" fill="#64748b" rx="2"/>
+              <text x="342" y="50" font-size="9" font-weight="700" fill="#334155" text-anchor="middle">33.0%</text>
+              <text x="342" y="132" font-size="8" fill="#475569" text-anchor="middle">無激勵</text>
+              <rect x="390" y="71" width="45" height="49" fill="#2563eb" rx="2"/>
+              <text x="412" y="66" font-size="9" font-weight="700" fill="#1e3a8a" text-anchor="middle">25.0%</text>
+              <text x="412" y="132" font-size="8" font-weight="700" fill="#1e3a8a" text-anchor="middle">金錢激勵組</text>
+              <text x="475" y="80" font-size="8.5" font-weight="700" fill="#059669">降幅 -8%*</text>
+              <text x="475" y="95" font-size="7.5" fill="#64748b">(t=2.24, p=.03)</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div class="slide-page-badge">05 / 16</div>
+    </section>
+
+    <!-- ==================== SLIDE 06: THEORY BYSTANDER ==================== -->
+    <section class="slide" data-slide="6">
+      <div class="slide-top-bar">
+        <span class="layer-badge layer-theory">群體旁觀實證 · Layer 1</span>
+        <span class="node-chain-indicator">Nodes 02, 03 ➔ <strong>Node 06 [THEORY_BYSTANDER]</strong> ➔ Nodes 09, 13</span>
+      </div>
+      <div class="slide-heading-wrap">
+        <h2 class="slide-heading">
+          Darley & Latané (1968) 責任分散機率模型
+          <span class="slide-heading-en">Diffusion of Responsibility: The Mathematical Probability of Inaction</span>
+        </h2>
+      </div>
+
+      <div class="slide-body-split">
+        <div class="graph-radar-card">
+          <div class="radar-header">
+            <span>全域圖譜雷達</span>
+            <span style="color:var(--blue-accent); font-family:monospace;">NODE 06</span>
+          </div>
+          <div class="radar-svg-wrap" id="radar-06"></div>
+          <div class="radar-meta">
+            <strong>拓撲入鏈</strong>：N02(場論), N03(歸屬)<br>
+            <strong>拓撲出鏈</strong>：導向 N09(暴力邊界逆轉) 與 N13(公共安全責任黑洞)
+          </div>
+        </div>
+
+        <div class="main-content-flow">
+          <div class="grid-2">
+            <div class="card navy-border">
+              <div class="card-title">🚨 急難通報意願的斷崖式下跌</div>
+              <p class="card-p">
+                • <strong>單獨在場（2 人組）</strong>：發作前 <strong>85%</strong> 立即通報，最終 100% 行動，平均耗時 <strong>52 秒</strong>。<br>
+                • <strong>4 名他人在場（6 人組）</strong>：發作前僅 <strong>31%</strong> 通報，平均拖延至 <strong>166 秒</strong>（$F = 8.09, p < .01$）。
+              </p>
+            </div>
+            <div class="card blue-accent">
+              <div class="card-title">📐 群體累積救援機率數學模型</div>
+              <p class="card-p">
+                在 $n$ 人群體中，受害者在時間 $t$ 內獲得至少一人救助的機率為：
+                $$P_{\ge 1}(t) = 1 - [1 - P(t)]^n$$
+                <strong>數學悖論</strong>：因個體行動力 $P(t)$ 隨 $n$ 陡降，<strong>發作前 45 秒受害者獲救率反而是單人在場（50%）遠高於 5 人在場（≈ 0%）！</strong>
+              </p>
+            </div>
+          </div>
+
+          <div class="local-svg-card">
+            <svg viewBox="0 0 550 160" xmlns="http://www.w3.org/2000/svg">
+              <rect width="550" height="160" fill="#ffffff" rx="6" stroke="#e2e8f0"/>
+              <text x="275" y="22" font-family="'Noto Serif TC', serif" font-size="10.5" font-weight="700" fill="#0f2b5c" text-anchor="middle">累積求助反應率隨時間變化衰減曲線 (Darley & Latané Fig 1)</text>
+              <line x1="60" y1="35" x2="60" y2="135" stroke="#94a3b8" stroke-width="1.2"/>
+              <line x1="60" y1="135" x2="500" y2="135" stroke="#94a3b8" stroke-width="1.2"/>
+              <text x="52" y="42" font-size="8" fill="#64748b" text-anchor="end">100%</text>
+              <text x="52" y="88" font-size="8" fill="#64748b" text-anchor="end">50%</text>
+              <text x="52" y="135" font-size="8" fill="#64748b" text-anchor="end">0%</text>
+              <path d="M 60 135 Q 120 45 220 38 T 490 35" fill="none" stroke="#2563eb" stroke-width="3"/>
+              <text x="340" y="42" font-size="8.5" font-weight="700" fill="#2563eb">2 人組 (單獨在場 100%)</text>
+              <path d="M 60 135 Q 150 100 230 70 T 490 55" fill="none" stroke="#0f2b5c" stroke-width="2" stroke-dasharray="4"/>
+              <text x="380" y="66" font-size="8" fill="#0f2b5c">3 人組 (85%)</text>
+              <path d="M 60 135 Q 200 130 270 105 T 490 85" fill="none" stroke="#ef4444" stroke-width="2.5"/>
+              <text x="400" y="98" font-size="8" font-weight="700" fill="#ef4444">6 人組 (僅 62%)</text>
+              <line x1="220" y1="35" x2="220" y2="135" stroke="#cbd5e1" stroke-dasharray="2"/>
+              <text x="220" y="146" font-size="7.5" fill="#64748b" text-anchor="middle">125s (Cutoff)</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div class="slide-page-badge">06 / 16</div>
+    </section>
+
+    <!-- ==================== SLIDE 07: THEORY DISSONANCE ==================== -->
+    <section class="slide" data-slide="7">
+      <div class="slide-top-bar">
+        <span class="layer-badge layer-theory">認知動力學 · Layer 1</span>
+        <span class="node-chain-indicator">Nodes 04, 05 ➔ <strong>Node 07 [THEORY_DISSONANCE]</strong> ➔ Nodes 10, 11</span>
+      </div>
+      <div class="slide-heading-wrap">
+        <h2 class="slide-heading">
+          Festinger & Carlsmith (1959) 認知失調與自我合理化
+          <span class="slide-heading-en">Forced Compliance & Self-Persuasion: The Psychology of Justifying Complicity</span>
+        </h2>
+      </div>
+
+      <div class="slide-body-split">
+        <div class="graph-radar-card">
+          <div class="radar-header">
+            <span>全域圖譜雷達</span>
+            <span style="color:var(--blue-accent); font-family:monospace;">NODE 07</span>
+          </div>
+          <div class="radar-svg-wrap" id="radar-07"></div>
+          <div class="radar-meta">
+            <strong>拓撲入鏈</strong>：N04(服從), N05(從眾)<br>
+            <strong>拓撲出鏈</strong>：解碼 N10(醫療空難階層) 與 N11(企業造假長期化)
+          </div>
+        </div>
+
+        <div class="main-content-flow">
+          <div class="grid-2">
+            <div class="card navy-border">
+              <div class="card-title">💵 不充分外部理由效應 (Insufficient Justification)</div>
+              <p class="card-p">
+                • <strong>\$20 豐厚報酬組</strong>：外部理由充足（「我是為錢說謊」），對枯燥任務真實評價不變（$-0.05$）。<br>
+                • <strong>\$1 微薄報酬組</strong>：外部理由不足引發強烈認知失調，迫使個體透過「自我說服」主動反轉內在態度（真正相信任務極為有趣，高達 <strong>$+1.35, p < .01$</strong>）！
+              </p>
+            </div>
+            <div class="card blue-accent">
+              <div class="card-title">📐 失調比例函數：D / (D + C)</div>
+              <p class="card-p">
+                $$\text{Dissonance} = f\left(\frac{D}{D + C}\right)$$
+                當外在和諧理由 $C$ 極小時，為減緩心理張力，唯一途徑是修改內在信念 $D$。這完美解釋了為何在 Milgram 實驗中，每跨出微小違心一步，被試便會<strong>主動為體制合理化惡意</strong>。
+              </p>
+            </div>
+          </div>
+
+          <div class="local-svg-card">
+            <svg viewBox="0 0 550 160" xmlns="http://www.w3.org/2000/svg">
+              <rect width="550" height="160" fill="#ffffff" rx="6" stroke="#e2e8f0"/>
+              <text x="275" y="22" font-family="'Noto Serif TC', serif" font-size="10.5" font-weight="700" fill="#0f2b5c" text-anchor="middle">Festinger & Carlsmith (1959) 任務享受評分對比 (Table 1)</text>
+              <line x1="50" y1="85" x2="500" y2="85" stroke="#94a3b8" stroke-width="1"/>
+              <text x="45" y="88" font-size="8" fill="#64748b" text-anchor="end">0.0 (中立)</text>
+              <text x="45" y="50" font-size="8" fill="#64748b" text-anchor="end">+1.5 (有趣)</text>
+              <text x="45" y="125" font-size="8" fill="#64748b" text-anchor="end">-1.5 (枯燥)</text>
+
+              <!-- Control -->
+              <rect x="100" y="85" width="60" height="20" fill="#94a3b8" rx="2"/>
+              <text x="130" y="120" font-size="8.5" font-weight="700" fill="#475569" text-anchor="middle">-0.45</text>
+              <text x="130" y="140" font-size="8" fill="#475569" text-anchor="middle">控制組 (無說謊)</text>
+
+              <!-- $1 condition -->
+              <rect x="245" y="35" width="60" height="50" fill="#2563eb" rx="2"/>
+              <text x="275" y="28" font-size="9" font-weight="700" fill="#1e3a8a" text-anchor="middle">+1.35***</text>
+              <text x="275" y="140" font-size="8" font-weight="700" fill="#1e3a8a" text-anchor="middle">$1 組 (強烈失調)</text>
+
+              <!-- $20 condition -->
+              <rect x="390" y="85" width="60" height="3" fill="#64748b" rx="1"/>
+              <text x="420" y="105" font-size="8.5" fill="#475569" text-anchor="middle">-0.05</text>
+              <text x="420" y="140" font-size="8" fill="#475569" text-anchor="middle">$20 組 (理由充足)</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div class="slide-page-badge">07 / 16</div>
+    </section>
+
+    <!-- ==================== SLIDE 08: CRITIQUE ECOLOGICAL ==================== -->
+    <section class="slide" data-slide="8">
+      <div class="slide-top-bar">
+        <span class="layer-badge layer-critique">方法論批判 · Layer 2</span>
+        <span class="node-chain-indicator">Nodes 04, 05 ➔ <strong>Node 08 [CRITIQUE_ECOLOGICAL]</strong> ➔ Nodes 10, 11, 12</span>
+      </div>
+      <div class="slide-heading-wrap">
+        <h2 class="slide-heading">
+          方法論批判一：實驗室生態效度 (Ecological Validity) 鴻溝
+          <span class="slide-heading-en">Translational Gap 1: Artificial Settings vs. Real-World Stakes</span>
+        </h2>
+      </div>
+
+      <div class="slide-body-split">
+        <div class="graph-radar-card">
+          <div class="radar-header">
+            <span>全域圖譜雷達</span>
+            <span style="color:var(--gold-accent); font-family:monospace;">NODE 08</span>
+          </div>
+          <div class="radar-svg-wrap" id="radar-08"></div>
+          <div class="radar-meta">
+            <strong>拓撲入鏈</strong>：N04(服從), N05(從眾)<br>
+            <strong>拓撲出鏈</strong>：修正現實映射 ➔ N10(醫療空難), N11(企業造假), N12(同溫層)
+          </div>
+        </div>
+
+        <div class="main-content-flow">
+          <div class="grid-3">
+            <div class="card">
+              <div class="card-title">🎭 需求特徵與「愚弄契約」</div>
+              <p class="card-p">
+                <strong>Orne & Holland (1968) 質疑</strong>：<br>
+                受試者是否看穿了騙局？在名校實驗室中，被試可能深信「主試者不會真的殺人」，其服從是為了<strong>迎合實驗者期待（Demand Characteristics）</strong>。
+              </p>
+            </div>
+            <div class="card">
+              <div class="card-title">💸 利益綁定與抗命代價失真</div>
+              <p class="card-p">
+                <strong>零成本抗命 vs. 殘酷現實</strong>：<br>
+                實驗室中拒絕執行指令「毫無個人代價」（車馬費照領）；<br>
+                但在真實職場中抗拒主管意味著<strong>開除、考績黑名單與生計斷絕</strong>。實驗室低估了真實抗命阻力！
+              </p>
+            </div>
+            <div class="card">
+              <div class="card-title">📻 人為阻斷的溝通環境</div>
+              <p class="card-p">
+                <strong>被剝奪的社會湧現性</strong>：<br>
+                隔間對講機排除了人群的<strong>眼神交會、小組討論與情緒感染</strong>。真實社會的從眾往往更為複雜且具群體動態反饋。
+              </p>
+            </div>
+          </div>
+
+          <div class="card navy-border" style="background:#f8fafc;">
+            <div class="card-title" style="color:var(--navy-deep);">⚠️ 方法論啟示：存在性證明 ≠ 現實發生率</div>
+            <p class="card-p">
+              實驗室驗證了「情境能壓倒道德」的<strong>微觀心理機制可能性</strong>，但不能直接將「65% 或 33%」粗暴套用為真實世界的違紀比例。
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="slide-page-badge">08 / 16</div>
+    </section>
+
+    <!-- ==================== SLIDE 09: CRITIQUE WEIRD ==================== -->
+    <section class="slide" data-slide="9">
+      <div class="slide-top-bar">
+        <span class="layer-badge layer-critique">邊界條件批判 · Layer 2</span>
+        <span class="node-chain-indicator">Node 06 ➔ <strong>Node 09 [CRITIQUE_WEIRD]</strong> ➔ Node 13</span>
+      </div>
+      <div class="slide-heading-wrap">
+        <h2 class="slide-heading">
+          方法論批判二：WEIRD 偏差與邊界條件逆轉
+          <span class="slide-heading-en">Translational Gap 2: Cross-Cultural Differences & High-Danger Inversion</span>
+        </h2>
+      </div>
+
+      <div class="slide-body-split">
+        <div class="graph-radar-card">
+          <div class="radar-header">
+            <span>全域圖譜雷達</span>
+            <span style="color:var(--gold-accent); font-family:monospace;">NODE 09</span>
+          </div>
+          <div class="radar-svg-wrap" id="radar-09"></div>
+          <div class="radar-meta">
+            <strong>拓撲入鏈</strong>：N06(旁觀者模型)<br>
+            <strong>拓撲出鏈</strong>：修正公共安全干預 ➔ N13(公共安全黑洞)
+          </div>
+        </div>
+
+        <div class="main-content-flow">
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-title">🌐 WEIRD 族群偏差與文化調節</div>
+              <p class="card-p">
+                三大經典均基於 Western, Educated, Industrialized, Rich, Democratic 樣本。<br>
+                <strong>集體主義效應 (Bond & Smith, 1996)</strong>：東亞等注重群體和諧文化，從眾率（平均 37%）顯著高於西方個人主義文化（約 25%）。
+              </p>
+            </div>
+            <div class="card blue-accent">
+              <div class="card-title">🚨 Fischer et al. (2011) 暴力急難逆轉</div>
+              <p class="card-p">
+                105 項研究統合分析揭露重大邊界：<br>
+                • <strong>情境模糊/非致命</strong>：旁觀者抑制極強；<br>
+                • <strong>高危險暴力現場</strong>：<strong>旁觀者效應顯著減弱甚至逆轉</strong>！因情境無歧義且需要多人協同制暴。
+              </p>
+            </div>
+          </div>
+
+          <div class="card navy-border">
+            <div class="card-title">📍 情境距離調節定律 (Milgram 1974 系列實證)</div>
+            <div style="font-size:0.86rem; color:var(--text-muted); line-height:1.6;">
+              • <strong>電話遠距指揮</strong>：權威者不在場時，完全服從率由 65% 暴跌至 <strong>20.5%</strong>。<br>
+              • <strong>受害者物理距離接近</strong>：受害者同處一室且需手按電極，服從率腰斬至 <strong>30.0%</strong>。<br>
+              • <strong>機構合法性剝除</strong>：搬出耶魯大學改在破舊商辦進行，服從率降至 <strong>48.0%</strong>。
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-page-badge">09 / 16</div>
+    </section>
+
+    <!-- ==================== SLIDE 10: CRISIS HEALTHCARE ==================== -->
+    <section class="slide" data-slide="10">
+      <div class="slide-top-bar">
+        <span class="layer-badge layer-crisis">現實生活危機 · Layer 3</span>
+        <span class="node-chain-indicator">Nodes 04, 07, 08 ➔ <strong>Node 10 [CRISIS_HEALTHCARE]</strong> ➔ Node 14</span>
+      </div>
+      <div class="slide-heading-wrap">
+        <h2 class="slide-heading">
+          現實生活危機 A：醫療差錯與航空「階層沉默」
+          <span class="slide-heading-en">Authority Gradient in Clinical Errors & Aviation Crew Resource Management</span>
+        </h2>
+      </div>
+
+      <div class="slide-body-split">
+        <div class="graph-radar-card">
+          <div class="radar-header">
+            <span>全域圖譜雷達</span>
+            <span style="color:#ef4444; font-family:monospace;">NODE 10</span>
+          </div>
+          <div class="radar-svg-wrap" id="radar-10"></div>
+          <div class="radar-meta">
+            <strong>拓撲入鏈</strong>：N04(服從), N07(合理化), N08(生態代價)<br>
+            <strong>拓撲出鏈</strong>：導向 N14(雙人覆核與異議賦能)
+          </div>
+        </div>
+
+        <div class="main-content-flow">
+          <div class="grid-2">
+            <div class="card danger-border">
+              <div class="card-title">🏥 醫療給藥差錯與權力落差</div>
+              <p class="card-p">
+                <strong>資深醫師指令癱瘓專業覆核</strong>：<br>
+                外科主任開立明顯超標 5 倍致死劑量，護理師即便內心疑惑，在權威催促下仍盲目執行。代理態轉移使護理師將道德責任全數向上推託給醫師。
+              </p>
+            </div>
+            <div class="card danger-border">
+              <div class="card-title">✈️ 航空空難中的「副手沉默」</div>
+              <p class="card-p">
+                <strong>大韓航空等早期空難調查</strong>：<br>
+                副機師於儀表顯示即將撞山時，因嚴格的軍階長幼尊卑文化不敢堅決奪回操縱桿，導致機毀人亡。正機長的一句「照我說的做」徹底鎖死副手安全閥。
+              </p>
+            </div>
+          </div>
+
+          <div class="card blue-accent">
+            <div class="card-title">💡 實務死結：缺乏免責挑戰協議的階層體系必然釀災</div>
+            <p class="card-p">
+              兩大高風險領域的血淚教訓證實：當權威者在場時，基層的道德勇氣極其脆弱。<strong>必須在制度上賦予基層「無責停機權（Stop-Action Authority）」</strong>，方能打破盲從。
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="slide-page-badge">10 / 16</div>
+    </section>
+
+    <!-- ==================== SLIDE 11: CRISIS CORPORATE ==================== -->
+    <section class="slide" data-slide="11">
+      <div class="slide-top-bar">
+        <span class="layer-badge layer-crisis">現實生活危機 · Layer 3</span>
+        <span class="node-chain-indicator">Nodes 04, 07, 08 ➔ <strong>Node 11 [CRISIS_CORPORATE]</strong> ➔ Node 14</span>
+      </div>
+      <div class="slide-heading-wrap">
+        <h2 class="slide-heading">
+          現實生活危機 B：企業重大舞弊與體制平庸之惡
+          <span class="slide-heading-en">Systemic Corruption: Enron, Boeing 737 MAX & Volkswagen Emissions</span>
+        </h2>
+      </div>
+
+      <div class="slide-body-split">
+        <div class="graph-radar-card">
+          <div class="radar-header">
+            <span>全域圖譜雷達</span>
+            <span style="color:#ef4444; font-family:monospace;">NODE 11</span>
+          </div>
+          <div class="radar-svg-wrap" id="radar-11"></div>
+          <div class="radar-meta">
+            <strong>拓撲入鏈</strong>：N04(服從), N07(認知失調), N08(現實利益)<br>
+            <strong>拓撲出鏈</strong>：導向 N14(吹哨者與雙人獨立簽核)
+          </div>
+        </div>
+
+        <div class="main-content-flow">
+          <div class="grid-3">
+            <div class="card danger-border">
+              <div class="card-title">🚗 福斯柴油門 (VW)</div>
+              <p class="card-p">
+                數十名工程師明知廢氣軟體作弊，但在高層「排氣與成本必須雙達標」的高壓指令下，集體參與詐欺。
+              </p>
+            </div>
+            <div class="card danger-border">
+              <div class="card-title">✈️ 波音 737 MAX 事故</div>
+              <p class="card-p">
+                為節省飛行員重新受訓成本，高層隱瞞 MCAS 缺陷；基層員工在內部郵件嘲諷卻無人敢對監管機構公開揭發。
+              </p>
+            </div>
+            <div class="card danger-border">
+              <div class="card-title">📉 安隆案 (Enron)</div>
+              <p class="card-p">
+                會計師事務所與財務人員利用特殊目的實體（SPE）做假帳，基層將違法視為「符合主管意志的正常業務」。
+              </p>
+            </div>
+          </div>
+
+          <div class="card navy-border">
+            <div class="card-title">⚙️ 心理機制閉環：得寸進尺與失調自我合理化</div>
+            <p class="card-p">
+              舞弊極少是一步登天，而是如 Milgram 15V 電壓般<strong>微幅遞增</strong>：從小幅度修改會計參數開始，員工透過認知失調消除機制逐漸說服自己「大家都這樣做、這是為了公司大局」，終至無法回頭。
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="slide-page-badge">11 / 16</div>
+    </section>
+
+    <!-- ==================== SLIDE 12: CRISIS ALGORITHM ==================== -->
+    <section class="slide" data-slide="12">
+      <div class="slide-top-bar">
+        <span class="layer-badge layer-crisis">現實生活危機 · Layer 3</span>
+        <span class="node-chain-indicator">Nodes 03, 05, 08 ➔ <strong>Node 12 [CRISIS_ALGORITHM]</strong> ➔ Node 14</span>
+      </div>
+      <div class="slide-heading-wrap">
+        <h2 class="slide-heading">
+          現實生活危機 C：演算法同溫層、政治極化與董事會盲思
+          <span class="slide-heading-en">Conformity in Social Media Echo Chambers & Executive Groupthink</span>
+        </h2>
+      </div>
+
+      <div class="slide-body-split">
+        <div class="graph-radar-card">
+          <div class="radar-header">
+            <span>全域圖譜雷達</span>
+            <span style="color:#ef4444; font-family:monospace;">NODE 12</span>
+          </div>
+          <div class="radar-svg-wrap" id="radar-12"></div>
+          <div class="radar-meta">
+            <strong>拓撲入鏈</strong>：N03(歸屬), N05(從眾), N08(生態代價)<br>
+            <strong>拓撲出鏈</strong>：導向 N14(無記名表決與魔鬼代言人)
+          </div>
+        </div>
+
+        <div class="main-content-flow">
+          <div class="grid-2">
+            <div class="card danger-border">
+              <div class="card-title">🗳️ 政治立場的強大從眾偏轉 (Franzen 2023)</div>
+              <p class="card-p">
+                Franzen & Mader 證實 Asch 效應直接穿透主觀價值：<br>
+                • <strong>工會擴權</strong>：同謀說 No 贊同率僅 29%，同謀說 Yes 暴增至 <strong>72%</strong>（$\Delta = 42.7\%$）；<br>
+                • <strong>公民自由</strong>：贊同率由 33% 飆至 <strong>81%</strong>（$\Delta = 47.6\%$）；<br>
+                • <strong>平均偏轉達 38%</strong>：群體壓力在民主政治中能輕易左右投票走向！
+              </p>
+            </div>
+            <div class="card">
+              <div class="card-title">🌐 數位時代的「虛擬同謀 (Astroturfing)」</div>
+              <p class="card-p">
+                公關水軍製造「首頁全體一致」的假象，誘發廣大網民的<strong>規範性順從</strong>；高階董事會為求團隊和諧，對高風險決策保持沈默，陷入集體盲思（Groupthink）。
+              </p>
+            </div>
+          </div>
+
+          <div class="card blue-accent">
+            <div class="card-title">🛡️ 人格研究的孤獨曙光：經驗開放性 (Openness)</div>
+            <p class="card-p">
+              Franzen (2023) 檢驗大五人格，<strong>僅經驗開放性顯著抵禦群體從眾（$\beta = -0.30, p < 0.05$）</strong>！團隊若缺乏高開放性的獨立思辨者，必然滑向群體同質化深淵。
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="slide-page-badge">12 / 16</div>
+    </section>
+
+    <!-- ==================== SLIDE 13: CRISIS CYBER ==================== -->
+    <section class="slide" data-slide="13">
+      <div class="slide-top-bar">
+        <span class="layer-badge layer-crisis">現實生活危機 · Layer 3</span>
+        <span class="node-chain-indicator">Nodes 06, 09 ➔ <strong>Node 13 [CRISIS_CYBER]</strong> ➔ Node 15</span>
+      </div>
+      <div class="slide-heading-wrap">
+        <h2 class="slide-heading">
+          現實生活危機 D：公共安全責任黑洞與網路霸凌
+          <span class="slide-heading-en">Bystander Inaction in Crowds & The Rise of Cyberbystanders</span>
+        </h2>
+      </div>
+
+      <div class="slide-body-split">
+        <div class="graph-radar-card">
+          <div class="radar-header">
+            <span>全域圖譜雷達</span>
+            <span style="color:#ef4444; font-family:monospace;">NODE 13</span>
+          </div>
+          <div class="radar-svg-wrap" id="radar-13"></div>
+          <div class="radar-meta">
+            <strong>拓撲入鏈</strong>：N06(旁觀模型), N09(邊界修正)<br>
+            <strong>拓撲出鏈</strong>：導向 N15(急救單點鎖定 SOP)
+          </div>
+        </div>
+
+        <div class="main-content-flow">
+          <div class="grid-3">
+            <div class="card danger-border">
+              <div class="card-title">1. 多元無知 (Pluralistic)</div>
+              <p class="card-p">
+                街頭有人倒地，所有人內心焦慮但外表冷靜；大家互以對方的冷靜定義現況，集體做出「這不是危急事件」的誤判。
+              </p>
+            </div>
+            <div class="card danger-border">
+              <div class="card-title">2. 責任分散 (Diffusion)</div>
+              <p class="card-p">
+                「一定有別人打電話了」。在場人數越多，個人承擔的道德責任被瓜分為 $\frac{1}{n}$，不作為的心理內疚大幅稀釋。
+              </p>
+            </div>
+            <div class="card danger-border">
+              <div class="card-title">3. 評價顧慮 (Apprehension)</div>
+              <p class="card-p">
+                害怕衝上前救援卻發現對方只是拍戲或喝醉，在眾人面前成為笑柄，社會評價焦慮徹底凍結了行動力。
+              </p>
+            </div>
+          </div>
+
+          <div class="card navy-border">
+            <div class="card-title">📱 數位時代的「網路旁觀者 (Cyberbystanders)」災難</div>
+            <p class="card-p">
+              社交平台發生網路霸凌時，線上圍觀者規模動輒數萬人。<strong>群體規模 $n \to \infty$ 使責任稀釋極端化</strong>，加上螢幕匿名性，導致數萬名目擊者無人檢舉，甚至順從多數加入嘲諷行列。
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="slide-page-badge">13 / 16</div>
+    </section>
+
+    <!-- ==================== SLIDE 14: INTERVENTION ORG ==================== -->
+    <section class="slide" data-slide="14">
+      <div class="slide-top-bar">
+        <span class="layer-badge layer-solution">系統工程防線 · Layer 4</span>
+        <span class="node-chain-indicator">Nodes 10, 11, 12 ➔ <strong>Node 14 [INTERVENTION_ORG]</strong> ➔ Node 16</span>
+      </div>
+      <div class="slide-heading-wrap">
+        <h2 class="slide-heading">
+          制度工程防線一：解構組織權力與同儕盲從
+          <span class="slide-heading-en">Institutional Engineering I: Dual-Control, Peer Defiance & Devil's Advocate</span>
+        </h2>
+      </div>
+
+      <div class="slide-body-split">
+        <div class="graph-radar-card">
+          <div class="radar-header">
+            <span>全域圖譜雷達</span>
+            <span style="color:#059669; font-family:monospace;">NODE 14</span>
+          </div>
+          <div class="radar-svg-wrap" id="radar-14"></div>
+          <div class="radar-meta">
+            <strong>拓撲入鏈</strong>：N10(醫療空難), N11(企業造假), N12(同溫層盲思)<br>
+            <strong>拓撲出鏈</strong>：匯聚至 N16 終極省思
+          </div>
+        </div>
+
+        <div class="main-content-flow">
+          <div class="grid-3">
+            <div class="card" style="border-left: 4px solid var(--navy-deep);">
+              <div class="card-title">🛡️ 1. 同儕異議賦能 (Peer Defiance)</div>
+              <p class="card-p">
+                <strong>實證支撐</strong>：Milgram 發現只要有 1 名同伴拒絕服從，完全服從率立刻由 65% 暴跌至 <strong>10%</strong>！<br>
+                <strong>制度落地</strong>：落實嚴格匿名的《吹哨者保護法》，設立獨立於行政主管的倫理法規委員會。
+              </p>
+            </div>
+            <div class="card" style="border-left: 4px solid var(--blue-accent);">
+              <div class="card-title">🗳️ 2. 決策盲思消除機制</div>
+              <p class="card-p">
+                <strong>不記名預先表決 (Blind Voting)</strong>：消除會議發言的先發制人與規範性從眾；<br>
+                <strong>強制輪替「魔鬼代言人」</strong>：合法化異議角色，規定每次重大審查必須有 1 人專職反駁方案。
+              </p>
+            </div>
+            <div class="card" style="border-left: 4px solid #059669;">
+              <div class="card-title">✋ 3. 雙人覆核與停機權 (CRM)</div>
+              <p class="card-p">
+                <strong>航空座艙資源管理</strong>：任何機師發現高度異常有權立即喊出「Go-Around」強制復飛；<br>
+                <strong>醫療雙重簽核</strong>：高風險化療藥物必須由兩名護理師獨立計算劑量並簽名。
+              </p>
+            </div>
+          </div>
+
+          <div class="card blue-accent">
+            <div class="card-title">💡 核心邏輯：用制度賦予「異見合法性」</div>
+            <p class="card-p">
+              成熟組織不是要求員工具有英雄級的道德勇氣，而是<strong>透過制度設計消除提出異見時的社交代價與生存恐懼</strong>。
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="slide-page-badge">14 / 16</div>
+    </section>
+
+    <!-- ==================== SLIDE 15: INTERVENTION PUBLIC ==================== -->
+    <section class="slide" data-slide="15">
+      <div class="slide-top-bar">
+        <span class="layer-badge layer-solution">系統工程防線 · Layer 4</span>
+        <span class="node-chain-indicator">Node 13 ➔ <strong>Node 15 [INTERVENTION_PUBLIC]</strong> ➔ Node 16</span>
+      </div>
+      <div class="slide-heading-wrap">
+        <h2 class="slide-heading">
+          制度工程防線二：破解責任分散的單點鎖定 SOP
+          <span class="slide-heading-en">Institutional Engineering II: Single-Point Assignment Protocol in Emergencies</span>
+        </h2>
+      </div>
+
+      <div class="slide-body-split">
+        <div class="graph-radar-card">
+          <div class="radar-header">
+            <span>全域圖譜雷達</span>
+            <span style="color:#059669; font-family:monospace;">NODE 15</span>
+          </div>
+          <div class="radar-svg-wrap" id="radar-15"></div>
+          <div class="radar-meta">
+            <strong>拓撲入鏈</strong>：N13(公共安全黑洞)<br>
+            <strong>拓撲出鏈</strong>：匯聚至 N16 終極省思
+          </div>
+        </div>
+
+        <div class="main-content-flow">
+          <div class="grid-2">
+            <div class="card danger-border">
+              <div class="card-title">❌ 傳統致命錯誤呼救模式</div>
+              <p class="card-p">
+                向圍觀人群大喊：<strong>「有沒有人可以幫忙叫救護車！」</strong><br>
+                • <strong>後果</strong>：激發最大化責任分散（每個人都以為別人打了）；<br>
+                • <strong>多元無知共振</strong>：看大家沒動手，誤以為情勢不嚴重。
+              </p>
+            </div>
+            <div class="card blue-accent" style="border-left: 4px solid #059669;">
+              <div class="card-title">✅ 單點責任鎖定原則 (Single-Point Protocol)</div>
+              <p class="card-p">
+                手指特定對象、清楚指認特徵並賦予唯一具體指令：<br>
+                • <strong>「穿黑色西裝戴眼鏡的先生，請你立刻打 119！」</strong><br>
+                • <strong>「穿紅色球鞋的小姐，請你幫忙去拿 AED！」</strong><br>
+                • <strong>後果</strong>：將責任從 $\frac{1}{n}$ 瞬間收斂為 $100\%$，徹底粉碎責任分散！
+              </p>
+            </div>
+          </div>
+
+          <div class="local-svg-card">
+            <svg viewBox="0 0 550 160" xmlns="http://www.w3.org/2000/svg">
+              <rect width="550" height="160" fill="#ffffff" rx="6" stroke="#e2e8f0"/>
+              <text x="275" y="22" font-family="'Noto Serif TC', serif" font-size="10.5" font-weight="700" fill="#0f2b5c" text-anchor="middle">急難現場責任聚焦機制 (Single-Point Locking Mechanism)</text>
+              
+              <!-- Left: Diffuse (Bad) -->
+              <circle cx="120" cy="85" r="45" fill="#fee2e2" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="4"/>
+              <text x="120" y="75" font-size="10" font-weight="700" fill="#991b1b" text-anchor="middle">泛化向人群求救</text>
+              <text x="120" y="95" font-size="8.5" fill="#b91c1c" text-anchor="middle">責任分散度 = 1/n</text>
+              <text x="120" y="115" font-size="8" fill="#991b1b" text-anchor="middle">➔ 救援癱瘓</text>
+
+              <!-- Arrow -->
+              <polygon points="230,85 290,85 290,75 315,90 290,105 290,95 230,95" fill="#059669"/>
+              <text x="272" y="70" font-size="9" font-weight="700" fill="#065f46" text-anchor="middle">重塑情境</text>
+
+              <!-- Right: Focused (Good) -->
+              <circle cx="420" cy="85" r="45" fill="#ecfdf5" stroke="#059669" stroke-width="2"/>
+              <text x="420" y="75" font-size="10" font-weight="700" fill="#065f46" text-anchor="middle">特徵指名唯一指派</text>
+              <text x="420" y="95" font-size="8.5" fill="#047857" text-anchor="middle">個人責任感 = 100%</text>
+              <text x="420" y="115" font-size="8" font-weight="700" fill="#059669" text-anchor="middle">➔ 立即啟動救援</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div class="slide-page-badge">15 / 16</div>
+    </section>
+
+    <!-- ==================== SLIDE 16: EPILOGUE ==================== -->
+    <section class="slide slide-title-view" data-slide="16">
+      <div style="border-bottom: 2px solid var(--gold-accent); padding-bottom: 4px; font-size: 0.82rem; font-weight:700; color: var(--gold-accent); letter-spacing: 0.12em; text-transform:uppercase;">
+        Epilogue · 終極省思 · 16-Node Graph Closure
+      </div>
+
+      <h2 style="font-family:'Noto Serif TC', serif; font-size: 2.2rem; font-weight: 800; color: var(--navy-deep); max-width: 900px; line-height: 1.35;">
+        「不要試圖考驗人性，<br>而要設計讓人性無法作惡的情境。」
+      </h2>
+
+      <div class="card" style="max-width: 820px; text-align: left; background: #ffffff; border-left: 4px solid var(--navy-deep); box-shadow: var(--shadow-elegant);">
+        <p class="card-p" style="font-size: 0.94rem; color: var(--text-main); line-height: 1.75;">
+          社會心理學歷經數十年的實證研究，給予實際生活最大的智慧，不是控訴人類的軟弱，而是揭示了<strong>人類行為受到社會環境架構的深刻制約</strong>。<br><br>
+          一個成熟的組織與現代社會治理體系，<strong>永遠不應把集體安全寄託於少數英雄的個人道德勇氣</strong>。唯有正視情境的巨大引力，以科學的工程化思維拆解盲從、從眾與旁觀的結構槓桿，方能建立真正守護良知的制度防線。
+        </p>
+      </div>
+
+      <div style="font-size: 0.82rem; color: var(--text-dim); margin-top: 10px;">
+        Node 01 ➔ Nodes 02-15 ➔ Node 16 (16 節點全域閉環完成) · Social Psychology LLM Wiki Knowledge Compounding Series
+      </div>
+
+      <div class="slide-page-badge">16 / 16</div>
+    </section>
+
+  </main>
+
+  <!-- Navigation Footer -->
+  <footer class="deck-footer">
+    <div class="nav-group">
+      <button class="nav-btn" id="prevBtn" onclick="prevSlide()">◀ 上一張 (Prev)</button>
+      <button class="nav-btn" id="nextBtn" onclick="nextSlide()">下一張 (Next) ▶</button>
+      <button class="nav-btn" id="fullscreenBtn" onclick="toggleFullScreen()">⛶ 全螢幕 (F)</button>
+    </div>
+    <div style="font-size: 0.86rem; color: var(--text-dim); font-family: 'JetBrains Mono', monospace;">
+      Global Graph Node <span id="currentSlideIndicator" style="color:var(--navy-deep); font-weight:700;">01</span> / <span>16</span>
+    </div>
+  </footer>
+
+  <script>
+    // 16-Node Graph Topology Definitions
+    const nodeCoords = {
+      1:  {x: 140, y: 20, label: "01", name: "總綱"},
+      2:  {x: 140, y: 55, label: "02", name: "場論"},
+      3:  {x: 60,  y: 95, label: "03", name: "歸屬"},
+      4:  {x: 140, y: 95, label: "04", name: "服從"},
+      5:  {x: 220, y: 95, label: "05", name: "從眾"},
+      6:  {x: 220, y: 145, label: "06", name: "旁觀"},
+      7:  {x: 100, y: 145, label: "07", name: "失調"},
+      8:  {x: 60,  y: 190, label: "08", name: "生態"},
+      9:  {x: 220, y: 190, label: "09", name: "WEIRD"},
+      10: {x: 40,  y: 235, label: "10", name: "醫療"},
+      11: {x: 100, y: 235, label: "11", name: "造假"},
+      12: {x: 170, y: 235, label: "12", name: "同溫層"},
+      13: {x: 235, y: 235, label: "13", name: "網霸"},
+      14: {x: 90,  y: 280, label: "14", name: "組織防線"},
+      15: {x: 200, y: 280, label: "15", name: "急救SOP"},
+      16: {x: 140, y: 320, label: "16", name: "省思"}
+    };
+
+    const graphEdges = [
+      [1, 2],
+      [2, 3], [2, 4], [2, 5], [2, 6],
+      [3, 4], [3, 5], [3, 6],
+      [4, 7], [4, 8], [4, 10],
+      [5, 7], [5, 8], [5, 12],
+      [6, 9], [6, 13],
+      [7, 10], [7, 11],
+      [8, 10], [8, 11], [8, 12],
+      [9, 13],
+      [10, 14], [11, 14], [12, 14],
+      [13, 15],
+      [14, 16], [15, 16]
+    ];
+
+    // Function to render radar SVG for each slide
+    function renderRadar(activeNodeId) {
+      let svg = `<svg viewBox="0 0 280 345" xmlns="http://www.w3.org/2000/svg">
+        <rect width="280" height="345" fill="#f8fafc" rx="6"/>`;
+
+      // Render Edges
+      graphEdges.forEach(([u, v]) => {
+        const p1 = nodeCoords[u];
+        const p2 = nodeCoords[v];
+        const isActiveEdge = (u === activeNodeId || v === activeNodeId);
+        const strokeColor = isActiveEdge ? "#2563eb" : "#cbd5e1";
+        const strokeWidth = isActiveEdge ? "2.4" : "1.2";
+        svg += `<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}" stroke="${strokeColor}" stroke-width="${strokeWidth}"/>`;
+      });
+
+      // Render Nodes
+      for (let id = 1; id <= 16; id++) {
+        const node = nodeCoords[id];
+        const isActive = (id === activeNodeId);
+        const r = isActive ? "14" : "8";
+        const fill = isActive ? "#2563eb" : (id <= 7 ? "#0f2b5c" : (id <= 9 ? "#d97706" : (id <= 13 ? "#ef4444" : "#059669")));
+        const stroke = isActive ? "#93c5fd" : "#ffffff";
+        const strokeWidth = isActive ? "4" : "1.5";
+        
+        svg += `<circle cx="${node.x}" cy="${node.y}" r="${r}" fill="${fill}" stroke="${stroke}" stroke-width="${strokeWidth}"/>`;
+        if (isActive) {
+          svg += `<text x="${node.x}" y="${node.y + 4}" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="700" fill="#ffffff" text-anchor="middle">${node.label}</text>`;
+        }
+      }
+
+      svg += `</svg>`;
+      return svg;
+    }
+
+    // Populate all radars dynamically
+    for (let i = 2; i <= 15; i++) {
+      const el = document.getElementById(`radar-${i.toString().padStart(2, '0')}`);
+      if (el) el.innerHTML = renderRadar(i);
+    }
+
+    let currentSlide = 1;
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+    const progressBar = document.getElementById('progressBar');
+    const currentSlideIndicator = document.getElementById('currentSlideIndicator');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    function updateSlide(targetIndex) {
+      if (targetIndex < 1 || targetIndex > totalSlides) return;
+      
+      slides[currentSlide - 1].classList.remove('active');
+      currentSlide = targetIndex;
+      slides[currentSlide - 1].classList.add('active');
+
+      // Update indicator & progress
+      currentSlideIndicator.textContent = currentSlide.toString().padStart(2, '0');
+      progressBar.style.width = ((currentSlide / totalSlides) * 100) + '%';
+
+      prevBtn.disabled = currentSlide === 1;
+      nextBtn.disabled = currentSlide === totalSlides;
+    }
+
+    function nextSlide() {
+      if (currentSlide < totalSlides) updateSlide(currentSlide + 1);
+    }
+
+    function prevSlide() {
+      if (currentSlide > 1) updateSlide(currentSlide - 1);
+    }
+
+    function toggleFullScreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {});
+      } else {
+        if (document.exitFullscreen) document.exitFullscreen();
+      }
+    }
+
+    // Keyboard navigation
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        e.preventDefault();
+        nextSlide();
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        e.preventDefault();
+        prevSlide();
+      } else if (e.key === 'Home') {
+        e.preventDefault();
+        updateSlide(1);
+      } else if (e.key === 'End') {
+        e.preventDefault();
+        updateSlide(totalSlides);
+      } else if (e.key === 'f' || e.key === 'F') {
+        toggleFullScreen();
+      }
+    });
+
+    // Initialize
+    updateSlide(1);
+  </script>
+</body>
+</html>
